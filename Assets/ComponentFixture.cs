@@ -36,8 +36,8 @@ public class ComponentFixture : MonoBehaviour
     [SerializeField][HideInInspector]
     private ArrayInfo[] _field_arrays;
 
-#if UNITY_EDITOR
     public List<FiledData> ListFiledInfo { get; } = new List<FiledData>();
+
     public string ScriptFileName {
         get
         {
@@ -52,8 +52,6 @@ public class ComponentFixture : MonoBehaviour
     #region serialize
     public void OnAfterDeserialize()
     {
-        Debug.LogError("OnAfterDeserialize");
-
         if (_field_names == null)
         {
             return;
@@ -73,6 +71,7 @@ public class ComponentFixture : MonoBehaviour
 
                 value_index += _field_arrays[array_index].Count;
                 info.arr = arr;
+                array_index++;
             }
             else
             {
@@ -84,8 +83,6 @@ public class ComponentFixture : MonoBehaviour
 
     public void OnBeforeSerialize()
     {
-        Debug.LogError("OnBeforeSerialize");
-
         ListFiledInfo.Sort((a, b) => string.Compare(a.filed_name, b.filed_name));
         _field_names = ListFiledInfo.Select(m => m.filed_name).ToArray();
 
@@ -111,6 +108,4 @@ public class ComponentFixture : MonoBehaviour
         _field_arrays = list_array_info.ToArray();
     }
     #endregion
-#endif
-
 }

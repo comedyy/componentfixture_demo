@@ -19,6 +19,7 @@ public class ComponentFixtureEditor : Editor
     private ComponentFixture _target_object;
     List<FiledData> _lst_info;
     Dictionary<string, ListEditor> _dic_list_editor = new Dictionary<string, ListEditor>();
+    SerializedProperty p = null;
 
     // test_data
     List<EditorFiledInfo> lst_test = new List<EditorFiledInfo>()
@@ -30,7 +31,8 @@ public class ComponentFixtureEditor : Editor
         this._target_object = (ComponentFixture)this.target;
         this._target_object.OnAfterDeserialize();
         _lst_info = this._target_object.ListFiledInfo;
-        InputFileName(true);
+        p = serializedObject.FindProperty("_cshap_file_name");
+        GetFieldList();
     }
 
     private void ApplyModifycation()
@@ -48,21 +50,31 @@ public class ComponentFixtureEditor : Editor
     public override void OnInspectorGUI()
     {
         bool dirty = false;
-
-        if (InputFileName(false)) {
-            dirty = true;
+        string pre_name = _target_object.ScriptFileName;
+        _target_object.ScriptFileName = EditorGUILayout.DelayedTextField(_target_object.ScriptFileName);
+        if (pre_name != _target_object.ScriptFileName)
+        {
+            if (GetFieldList())
+            {
+                dirty = true;
+            }
+            else
+            {
+                _target_object.ScriptFileName = pre_name;
+            }
         }
-       
+
         UpdateValidate();
         foreach (var item in lst_test)
         {
-            FiledData data = _lst_info.Find(m=>m.filed_name == item.field_name);
+            FiledData data = _lst_info.Find(m => m.filed_name == item.field_name);
 
             if (!item.is_arry)
             {
                 Object pre = data.obj;
                 data.obj = EditorGUILayout.ObjectField(item.field_name, data.obj, item.type, true);
-                if(pre != data.obj){
+                if (pre != data.obj)
+                {
                     dirty = true;
                 }
             }
@@ -75,7 +87,8 @@ public class ComponentFixtureEditor : Editor
                     _dic_list_editor[item.field_name] = list;
                 }
 
-                if(list.DoLayoutList()){
+                if (list.DoLayoutList())
+                {
                     dirty = true;
                 }
             }
@@ -87,18 +100,8 @@ public class ComponentFixtureEditor : Editor
         }
     }
 
-    private bool InputFileName(bool init)
+    private bool GetFieldList()
     {
-        string pre_name = _target_object.ScriptFileName;
-        if (!init)
-        {
-            _target_object.ScriptFileName = EditorGUILayout.TextField(_target_object.ScriptFileName);
-            if (pre_name == _target_object.ScriptFileName)
-            {
-                return false;
-            }
-        }
-
         Type t = null;
         if (!string.IsNullOrEmpty(_target_object.ScriptFileName))
         {
@@ -106,22 +109,14 @@ public class ComponentFixtureEditor : Editor
             if (t == null)
             {
                 Debug.LogErrorFormat("not find type {0}", _target_object.ScriptFileName);
-                _target_object.ScriptFileName = pre_name;
                 return false;
             }
         }
 
-        GetEditorFieldList(t);
-        return true;
-    }
-
-    private void GetEditorFieldList(Type t)
-    {
-        Debug.LogError("change");
         lst_test.Clear();
         if (t == null)
         {
-            return;
+            return true;
         }
 
         FieldInfo[] fields = t.GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
@@ -140,5 +135,7 @@ public class ComponentFixtureEditor : Editor
                 lst_test.Add(editor_field_info);
             }
         }
+
+        return true;
     }
 }
