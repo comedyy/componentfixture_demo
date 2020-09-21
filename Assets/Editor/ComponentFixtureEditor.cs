@@ -68,7 +68,7 @@ public class ComponentFixtureEditor : Editor
             }
             else
             {
-                data.arr = data.arr ?? new Object[0];
+                data.arr = data.arr ?? new List<Object>();
                 if (!_dic_list_editor.TryGetValue(item.field_name, out ListEditor list))
                 {
                     list = new ListEditor(data.arr, item.type, item.field_name);

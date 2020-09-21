@@ -16,7 +16,7 @@ struct ArrayInfo
 public class FiledData
 {
     public string filed_name;
-    public Object[] arr;
+    public List<Object> arr;
     public Object obj;
 }
 
@@ -69,7 +69,7 @@ public class ComponentFixture : MonoBehaviour
 
             if (_field_arrays.Length > array_index && _field_arrays[array_index].Next == value_index)
             {
-                Object[] arr = _field_values.ToList().GetRange(value_index, _field_arrays[array_index].Count).ToArray();
+                List<Object> arr = _field_values.ToList().GetRange(value_index, _field_arrays[array_index].Count).ToList();
 
                 value_index += _field_arrays[array_index].Count;
                 info.arr = arr;
@@ -97,8 +97,8 @@ public class ComponentFixture : MonoBehaviour
             if (item.arr != null)
             {
                 list_value.AddRange(item.arr);
-                list_array_info.Add(new ArrayInfo() { Next = value_index, Count = item.arr.Length});
-                value_index += item.arr.Length;
+                list_array_info.Add(new ArrayInfo() { Next = value_index, Count = item.arr.Count});
+                value_index += item.arr.Count;
             }
             else
             {
