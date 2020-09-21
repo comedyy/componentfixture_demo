@@ -11,5 +11,25 @@ public abstract class ComponentScript : IComponentFixture
         OnFixtureLoad();
     }
 
-    protected abstract void OnFixtureLoad();
+    public void TriggerStart(){
+        Start();
+    }
+    public void Enable()
+    {
+        OnEnable();
+    }
+    public void Disable()
+    {
+        OnDisable();
+    }
+    public void TriggerDestroy()
+    {
+        OnDestroy();
+    }
+
+    protected virtual void OnFixtureLoad(){}
+    protected virtual void Start(){}
+    protected virtual void OnEnable(){}
+    protected virtual void OnDisable(){}
+    protected virtual void OnDestroy(){}
 }

@@ -32,4 +32,20 @@ public class MyBehavior : ComponentScript
         Debug.LogFormat("transform:{0}", string.Join(",", transforms.ToList()));       
         Debug.LogFormat("transform:{0}", string.Join(",", transforms1.ToList()));       
     }
+
+    protected override void Start(){
+        Debug.Log("MyBehavior start");
+    }
+
+    protected override void OnEnable(){
+        Debug.Log("MyBehavior OnEnable");
+    }
+
+    protected override void OnDisable(){
+        Debug.Log("MyBehavior OnDisable");
+    }
+
+    protected override void OnDestroy(){
+        Debug.Log("MyBehavior OnDestroy");
+    }
 }

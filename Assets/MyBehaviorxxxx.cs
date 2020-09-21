@@ -31,4 +31,21 @@ public class MyBehaviorxxxx : ComponentScript
         Debug.LogFormat("_other_scripts:{0}", string.Join(",", _other_scripts.ToList()));
         Debug.LogFormat("transform:{0}", string.Join(",", sdfsd.ToList()));       
     }
+
+
+    protected override void Start(){
+        Debug.Log("MyBehaviorxxxx start");
+    }
+
+    protected override void OnEnable(){
+        Debug.Log("MyBehaviorxxxx OnEnable");
+    }
+
+    protected override void OnDisable(){
+        Debug.Log("MyBehaviorxxxx OnDisable");
+    }
+
+    protected override void OnDestroy(){
+        Debug.Log("MyBehaviorxxxx OnDestroy");
+    }
 }

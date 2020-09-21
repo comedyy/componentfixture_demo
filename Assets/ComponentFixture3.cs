@@ -23,10 +23,15 @@ public class FiledData
 public interface IComponentFixture
 {
     void FixtureLoad(ComponentFixture3 comp);
+    void TriggerStart();
+    void Enable();
+    void Disable();
+    void TriggerDestroy();
 }
 
 public class ComponentFixture3 : MonoBehaviour
 {
+#region serialized_fields
     #pragma warning disable CS0649
     [SerializeField][HideInInspector]
     private string _cshap_file_name;
@@ -36,19 +41,27 @@ public class ComponentFixture3 : MonoBehaviour
     private Object[] _field_values;
     [SerializeField][HideInInspector]
     private ArrayInfo[] _field_arrays;
-    #pragma warning restore CS0649 
+    #pragma warning restore CS0649
+#endregion 
 
+#region runtime
     public IComponentFixture Script { get; private set; }
     public bool IsLoading { get; private set; }
     public static void PostLoad(IComponentFixture script, ComponentFixture3 component_object)
     {
         script.FixtureLoad(component_object);
+        if (component_object._need_enable_afterload)
+        {
+            script.Enable();
+            component_object._need_enable_afterload = false;
+        }
     }
     public static void PreLoad(IComponentFixture script, ComponentFixture3 component_object)
     {
         component_object.Script = script;
         component_object.IsLoading = true;
     }
+#endregion
 
     #region serialize
     public List<FiledData> ListFiledInfo { get; } = new List<FiledData>();
@@ -94,5 +107,32 @@ public class ComponentFixture3 : MonoBehaviour
 
         ListFiledInfo.RemoveAll(m=>!_field_names.Contains(m.filed_name));
     }
+    #endregion
+
+    #region unity Event
+    void Start(){
+        Script.TriggerStart();
+    }
+
+    void Destroy(){
+        Script.TriggerDestroy();
+    }
+
+    bool _need_enable_afterload;
+    void OnEnable(){
+        if (Script != null && !IsLoading)
+        {
+            Script.Enable();
+        }
+        else
+        {
+            _need_enable_afterload = true;
+        }
+    }
+
+    void OnDisable(){
+        Script.Disable();
+    }
+
     #endregion
 }
