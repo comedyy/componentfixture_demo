@@ -28,6 +28,8 @@ public interface IComponentFixture
 public class ComponentFixture : MonoBehaviour
 {
     [SerializeField][HideInInspector]
+    private string _cshap_file_name;
+    [SerializeField][HideInInspector]
     private string[] _field_names;
     [SerializeField][HideInInspector]
     private Object[] _field_values;
@@ -36,6 +38,16 @@ public class ComponentFixture : MonoBehaviour
 
 #if UNITY_EDITOR
     public List<FiledData> ListFiledInfo { get; } = new List<FiledData>();
+    public string ScriptFileName {
+        get
+        {
+            return _cshap_file_name;
+        }
+        set
+        {
+            _cshap_file_name = value;
+        }
+    }
 
     #region serialize
     public void OnAfterDeserialize()

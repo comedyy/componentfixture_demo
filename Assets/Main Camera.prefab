@@ -95,15 +95,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbfee7d7ab5193c4e8eef5380bf5add6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _cshap_file_name: MyBehavior
   _field_names:
-  - aaa
-  - bbb
-  - eee
+  - camera
+  - obj
+  - transforms
   _field_values:
-  - {fileID: 3212366432171005203, guid: 799dbf28b17a14050a26e6642975fd23, type: 3}
   - {fileID: 1702565075892051409}
-  - {fileID: 1702565075892051409}
-  - {fileID: 1702565075892051409}
+  - {fileID: 2146757181663451837}
   _field_arrays:
   - Next: 2
-    Count: 2
+    Count: 0

@@ -4,6 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using System.Linq;
+using System.Reflection;
 
 public struct EditorFiledInfo
 {
@@ -20,23 +21,8 @@ public class ComponentFixtureEditor : Editor
     Dictionary<string, ListEditor> _dic_list_editor = new Dictionary<string, ListEditor>();
 
     // test_data
-    readonly List<EditorFiledInfo> lst_test = new List<EditorFiledInfo>()
+    List<EditorFiledInfo> lst_test = new List<EditorFiledInfo>()
     {
-        new EditorFiledInfo(){
-            field_name = "aaa",
-            is_arry = false,
-            type = typeof(GameObject)
-        },
-        new EditorFiledInfo(){
-            field_name = "bbb",
-            is_arry = false,
-            type = typeof(Camera)
-        },
-        new EditorFiledInfo(){
-            field_name = "eee",
-            is_arry = true,
-            type = typeof(Camera)
-        },
     };
 
     internal void OnEnable()
@@ -44,6 +30,7 @@ public class ComponentFixtureEditor : Editor
         this._target_object = (ComponentFixture)this.target;
         this._target_object.OnAfterDeserialize();
         _lst_info = this._target_object.ListFiledInfo;
+        InputFileName(true);
     }
 
     private void ApplyModifycation()
@@ -61,6 +48,11 @@ public class ComponentFixtureEditor : Editor
     public override void OnInspectorGUI()
     {
         bool dirty = false;
+
+        if (InputFileName(false)) {
+            dirty = true;
+        }
+       
         UpdateValidate();
         foreach (var item in lst_test)
         {
@@ -92,6 +84,61 @@ public class ComponentFixtureEditor : Editor
         if (dirty)
         {
             ApplyModifycation();
+        }
+    }
+
+    private bool InputFileName(bool init)
+    {
+        string pre_name = _target_object.ScriptFileName;
+        if (!init)
+        {
+            _target_object.ScriptFileName = EditorGUILayout.TextField(_target_object.ScriptFileName);
+            if (pre_name == _target_object.ScriptFileName)
+            {
+                return false;
+            }
+        }
+
+        Type t = null;
+        if (!string.IsNullOrEmpty(_target_object.ScriptFileName))
+        {
+            t = Type.GetType(string.Format("{0},Assembly-CSharp", _target_object.ScriptFileName));
+            if (t == null)
+            {
+                Debug.LogErrorFormat("not find type {0}", _target_object.ScriptFileName);
+                _target_object.ScriptFileName = pre_name;
+                return false;
+            }
+        }
+
+        GetEditorFieldList(t);
+        return true;
+    }
+
+    private void GetEditorFieldList(Type t)
+    {
+        Debug.LogError("change");
+        lst_test.Clear();
+        if (t == null)
+        {
+            return;
+        }
+
+        FieldInfo[] fields = t.GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
+        for (int i = 0; i < fields.Length; i++)
+        {
+            FieldInfo info = fields[i];
+            if (info.GetCustomAttribute<ComponentFixtureFieldAttribute>() != null)
+            {
+                EditorFiledInfo editor_field_info = new EditorFiledInfo()
+                {
+                    field_name = info.Name,
+                    is_arry = info.FieldType.IsArray,
+                    type = info.FieldType.IsArray ? info.FieldType.GetElementType() : info.FieldType
+                };
+
+                lst_test.Add(editor_field_info);
+            }
         }
     }
 }
