@@ -171,10 +171,10 @@ MonoBehaviour:
   - sdfsd
   _field_values:
   - {fileID: 3866133331961849477}
+  - {fileID: 0}
   - {fileID: 3866133331961849477}
-  - {fileID: 3866133331961849477}
-  - {fileID: 1702565075892051409}
-  - {fileID: 544744519674109379}
+  - {fileID: 0}
+  - {fileID: 0}
   _field_arrays:
   - Next: 1
     Count: 2
@@ -291,7 +291,7 @@ MonoBehaviour:
   - transforms
   - transforms1
   _field_values:
-  - {fileID: 1702565075892051409}
+  - {fileID: 0}
   - {fileID: 5741265981012150875}
   - {fileID: 6965582924369936470}
   _field_arrays:

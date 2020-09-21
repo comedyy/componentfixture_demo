@@ -55,8 +55,22 @@ public class ComponentFixtureLoader
         return ret;
     }
 
+    static bool IsNull(object o)
+    {
+        if((o is Object)){
+            return (o as Object) == null;
+        }
+    
+        return o == null;
+    }
+
     static object ConvertItem(object o, Type t)
     {
+        if (IsNull(o))
+        {
+            return null;
+        }
+
         Type type_obj = typeof(Object);
         if (t.IsSubclassOf(type_obj))
         {
@@ -107,7 +121,14 @@ public class ComponentFixtureLoader
             }
             else
             {
-                info.SetValue(my3, ConvertItem(item.obj, sub_type));
+                object o = ConvertItem(item.obj, sub_type);
+                if (IsNull(o))
+                {
+                    info.SetValue(my3, null);
+                }
+                else{
+                    info.SetValue(my3, o);
+                }
             }
         }
 
