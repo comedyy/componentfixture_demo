@@ -6,6 +6,15 @@ using Object = UnityEngine.Object;
 using System.Linq;
 using System.Reflection;
 
+
+public struct EditorFiledInfo
+{
+    public string field_name;
+    public Type type;
+    public bool is_arry;
+}
+
+
 [CustomEditor(typeof(ComponentFixture3), true)]
 public class ComponentFixture3Editor : Editor
 {

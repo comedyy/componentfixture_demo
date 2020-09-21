@@ -6,8 +6,28 @@ using System.Linq;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
+[Serializable]
+public struct ArrayInfo
+{
+    public int Next;
+    public int Count;
+}
+
+public class FiledData
+{
+    public string filed_name;
+    public List<Object> arr;
+    public Object obj;
+}
+
+public interface IComponentFixture
+{
+    void FixtureLoad(ComponentFixture3 comp);
+}
+
 public class ComponentFixture3 : MonoBehaviour
 {
+    #pragma warning disable CS0649
     [SerializeField][HideInInspector]
     private string _cshap_file_name;
     [SerializeField][HideInInspector]
@@ -16,12 +36,13 @@ public class ComponentFixture3 : MonoBehaviour
     private Object[] _field_values;
     [SerializeField][HideInInspector]
     private ArrayInfo[] _field_arrays;
+    #pragma warning restore CS0649 
 
     public IComponentFixture Script { get; private set; }
     public bool IsLoading { get; private set; }
     public static void PostLoad(IComponentFixture script, ComponentFixture3 component_object)
     {
-        script.OnFixtureLoad();
+        script.FixtureLoad(component_object);
     }
     public static void PreLoad(IComponentFixture script, ComponentFixture3 component_object)
     {

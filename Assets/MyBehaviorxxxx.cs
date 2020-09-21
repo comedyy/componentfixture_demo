@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class MyBehaviorxxxx : IComponentFixture
+public class MyBehaviorxxxx : ComponentScript
 {
+    #pragma warning disable CS0649
     [ComponentFixtureField]
     private GameObject objxxx;
     [ComponentFixtureField]
@@ -18,9 +19,10 @@ public class MyBehaviorxxxx : IComponentFixture
 
     private Transform[] no_field1;
     public Transform[] no_field2;
+    #pragma warning restore CS0649 
 
     // Start is called before the first frame update
-    public void OnFixtureLoad()
+    protected override  void OnFixtureLoad()
     {
         Debug.Log("output ----: MyBehaviorxxxx");
         Debug.LogFormat("obj:{0}", objxxx);       
