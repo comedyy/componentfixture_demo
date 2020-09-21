@@ -17,20 +17,20 @@ public class ComponentFixture3 : MonoBehaviour
     [SerializeField][HideInInspector]
     private ArrayInfo[] _field_arrays;
 
-    public List<FiledData> ListFiledInfo { get; } = new List<FiledData>();
-
-    public string ScriptFileName {
-        get
-        {
-            return _cshap_file_name;
-        }
-        set
-        {
-            _cshap_file_name = value;
-        }
+    public IComponentFixture Script { get; private set; }
+    public bool IsLoading { get; private set; }
+    public static void PostLoad(IComponentFixture script, ComponentFixture3 component_object)
+    {
+        script.OnFixtureLoad();
+    }
+    public static void PreLoad(IComponentFixture script, ComponentFixture3 component_object)
+    {
+        component_object.Script = script;
+        component_object.IsLoading = true;
     }
 
     #region serialize
+    public List<FiledData> ListFiledInfo { get; } = new List<FiledData>();
     public void OnAfterDeserialize()
     {
         if (_field_names == null)

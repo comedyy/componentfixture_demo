@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Reflection;
+using Object = UnityEngine.Object;
 
 public class ComponentFixtureLoader
 {
@@ -38,9 +39,52 @@ public class ComponentFixtureLoader
         my.OnFixtureLoad();
     }
 
-    internal static void Load3(MyBehavior my3, ComponentFixture3 componentFixture)
+
+    public static Type GetFieldType(FieldInfo info)
+    {
+        Type ret;
+        if (info.FieldType.IsArray)
+        {
+            ret = info.FieldType.GetElementType();
+        }
+        else
+        {
+            ret = info.FieldType;
+        }
+
+        return ret;
+    }
+
+    static object ConvertItem(object o, Type t)
+    {
+        Type type_obj = typeof(Object);
+        if (t.IsSubclassOf(type_obj))
+        {
+            return o;
+        }
+
+        ComponentFixture3 com = o as ComponentFixture3;
+        if (com.Script != null || com.IsLoading)
+        {
+            if (com.IsLoading)
+            {
+                Debug.LogWarning("ComponentFixture3 Loop Connect");
+            }
+
+            return com.Script;
+        }
+        else
+        {
+            object ot = Activator.CreateInstance(t);
+            Load3(ot as IComponentFixture, com);
+            return ot;
+        }
+    }
+
+    internal static void Load3(IComponentFixture my3, ComponentFixture3 componentFixture)
     {
         componentFixture.OnAfterDeserialize();
+        ComponentFixture3.PreLoad(my3, componentFixture);
 
         Type type = my3.GetType();
         foreach (var item in componentFixture.ListFiledInfo)
@@ -52,20 +96,21 @@ public class ComponentFixtureLoader
                 continue;
             }
 
+            Type sub_type = GetFieldType(info);
             if (info.FieldType.IsArray)
             {
-                Array array = Array.CreateInstance(info.FieldType.GetElementType(), item.arr.Count);
+                Array array = Array.CreateInstance(sub_type, item.arr.Count);
                 for (int i = 0; i < item.arr.Count; i++)
-                    array.SetValue(item.arr[i], i);
+                    array.SetValue(ConvertItem(item.arr[i], sub_type), i);
 
                 info.SetValue(my3, array);
             }
             else
             {
-                info.SetValue(my3, item.obj);
+                info.SetValue(my3, ConvertItem(item.obj, sub_type));
             }
         }
 
-        my3.OnFixtureLoad();
+        ComponentFixture3.PostLoad(my3, componentFixture);
     }
 }

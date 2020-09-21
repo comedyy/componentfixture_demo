@@ -23,7 +23,7 @@ public class ComponentFixture3Editor : Editor
         this._target_object = (ComponentFixture3)this.target;
         _lst_info = this._target_object.ListFiledInfo;
         _script_name_property = serializedObject.FindProperty("_cshap_file_name");
-        GetFieldList(this._target_object.ScriptFileName);
+        GetFieldList(_script_name_property.stringValue);
     }
 
     void UpdateValidate(){
@@ -86,6 +86,27 @@ public class ComponentFixture3Editor : Editor
 
     }
 
+    Type GetFieldType(FieldInfo info)
+    {
+        Type ret;
+        if (info.FieldType.IsArray)
+        {
+            ret = info.FieldType.GetElementType();
+        }
+        else
+        {
+            ret = info.FieldType;
+        }
+
+        Type type_obj = typeof(Object);
+        if (!ret.IsSubclassOf(type_obj))
+        {
+            ret = typeof(ComponentFixture3);
+        }
+
+        return ret;
+    }
+
     private bool GetFieldList(string name)
     {
         Type t = null;
@@ -115,7 +136,7 @@ public class ComponentFixture3Editor : Editor
                 {
                     field_name = info.Name,
                     is_arry = info.FieldType.IsArray,
-                    type = info.FieldType.IsArray ? info.FieldType.GetElementType() : info.FieldType
+                    type = GetFieldType(info)
                 };
 
                 lst_test.Add(editor_field_info);
