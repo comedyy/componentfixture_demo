@@ -71,7 +71,7 @@ GameObject:
   - component: {fileID: 8333541800642046646}
   - component: {fileID: 1702565075892051409}
   - component: {fileID: 4460935163774879540}
-  - component: {fileID: 1545225184289007948}
+  - component: {fileID: 5741265981012150875}
   m_Layer: 0
   m_Name: prefab3
   m_TagString: MainCamera
@@ -150,7 +150,7 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2146757181663451837}
   m_Enabled: 1
---- !u!114 &1545225184289007948
+--- !u!114 &5741265981012150875
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -162,24 +162,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aae8966571f79644ea35e7611569b5d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cshap_file_name: MyBehavior
+  _cshap_file_name: MyBehaviorxxxx
   _field_names:
-  - camera
-  - obj
-  - transforms
-  - transforms1
+  - cameraYYY
+  - objxxx
+  - sdfsd
   _field_values:
-  - {fileID: 1702565075892051409}
-  - {fileID: 6965582924369936470}
-  - {fileID: 1925954084933770045}
-  - {fileID: 8333541800642046646}
-  - {fileID: 1060360313615937144}
-  - {fileID: 6062384205190462859}
+  - {fileID: 0}
+  - {fileID: 544744519674109379}
   _field_arrays:
   - Next: 2
-    Count: 2
-  - Next: 4
-    Count: 2
+    Count: 0
 --- !u!1 &2417675675820200594
 GameObject:
   m_ObjectHideFlags: 0

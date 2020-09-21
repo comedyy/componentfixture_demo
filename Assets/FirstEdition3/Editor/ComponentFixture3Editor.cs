@@ -11,18 +11,19 @@ public class ComponentFixture3Editor : Editor
 {
     private ComponentFixture3 _target_object;
     List<FiledData> _lst_info;
+    string _current_file_name;
     Dictionary<string, ListEditor> _dic_list_editor = new Dictionary<string, ListEditor>();
+    SerializedProperty _script_name_property;
 
     // test_data
-    List<EditorFiledInfo> lst_test = new List<EditorFiledInfo>()
-    {
-    };
+    List<EditorFiledInfo> lst_test = new List<EditorFiledInfo>();
 
     internal void OnEnable()
     {
         this._target_object = (ComponentFixture3)this.target;
         _lst_info = this._target_object.ListFiledInfo;
-        GetFieldList();
+        _script_name_property = serializedObject.FindProperty("_cshap_file_name");
+        GetFieldList(this._target_object.ScriptFileName);
     }
 
     void UpdateValidate(){
@@ -33,21 +34,24 @@ public class ComponentFixture3Editor : Editor
 
     public override void OnInspectorGUI()
     {
+        serializedObject.Update();
         _target_object.OnAfterDeserialize();
 
         bool dirty = false;
-        string pre_name = _target_object.ScriptFileName;
-        _target_object.ScriptFileName = EditorGUILayout.DelayedTextField(_target_object.ScriptFileName);
-        if (pre_name != _target_object.ScriptFileName)
+        string pre_name = _script_name_property.stringValue;
+        EditorGUILayout.DelayedTextField(_script_name_property);
+        if (pre_name != _script_name_property.stringValue || _current_file_name != _script_name_property.stringValue)
         {
-            if (GetFieldList())
+            if (GetFieldList(_script_name_property.stringValue))
             {
                 dirty = true;
             }
             else
             {
-                _target_object.ScriptFileName = pre_name;
+                _script_name_property.stringValue = pre_name;
             }
+
+            _current_file_name = _script_name_property.stringValue;
         }
 
         UpdateValidate();
@@ -82,15 +86,15 @@ public class ComponentFixture3Editor : Editor
 
     }
 
-    private bool GetFieldList()
+    private bool GetFieldList(string name)
     {
         Type t = null;
-        if (!string.IsNullOrEmpty(_target_object.ScriptFileName))
+        if (!string.IsNullOrEmpty(name))
         {
-            t = Type.GetType(string.Format("{0},Assembly-CSharp", _target_object.ScriptFileName));
+            t = Type.GetType(string.Format("{0},Assembly-CSharp", name));
             if (t == null)
             {
-                Debug.LogErrorFormat("not find type {0}", _target_object.ScriptFileName);
+                Debug.LogErrorFormat("not find type {0}", name);
                 return false;
             }
         }
@@ -172,5 +176,7 @@ public class ComponentFixture3Editor : Editor
             pp.FindPropertyRelative("Next").intValue = list_array_info[i].Next;
             pp.FindPropertyRelative("Count").intValue = list_array_info[i].Count;
         }
+
+        _dic_list_editor.Clear();
     }
 }
