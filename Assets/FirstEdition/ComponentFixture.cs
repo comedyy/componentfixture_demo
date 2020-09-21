@@ -7,7 +7,7 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 
 [Serializable]
-struct ArrayInfo
+public struct ArrayInfo
 {
     public int Next;
     public int Count;

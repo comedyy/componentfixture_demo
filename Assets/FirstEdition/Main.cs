@@ -11,6 +11,11 @@ public class Main : MonoBehaviour
         GameObject obj = Resources.Load<GameObject>("prefab");
 
         ComponentFixtureLoader.Load(my, obj.GetComponent<ComponentFixture>());
+
+        MyBehavior my3 = new MyBehavior();
+        GameObject obj3 = Resources.Load<GameObject>("prefab3");
+
+        ComponentFixtureLoader.Load3(my3, obj3.GetComponent<ComponentFixture3>());
     }
 
     // Update is called once per frame

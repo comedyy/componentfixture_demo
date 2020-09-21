@@ -8,6 +8,7 @@ public class ListEditor
 {
     readonly ReorderableList _init_talk;
     bool _dirty = false;
+    public bool Dirty => _dirty;
 
     public ListEditor(SerializedObject serializedObject, string property_name, string title, int height = 0)
     {
